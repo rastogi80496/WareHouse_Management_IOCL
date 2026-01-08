@@ -334,12 +334,11 @@ function Salespage() {
                         {sales?.status
                         }
                       </td>
-                      <td className="px-3 py-2 border">< FormattedTime  timestamp={sales?.createdAt}/></td>
+                      <td className="px-3 py-2 border"><FormattedTime timestamp={sales?.createdAt}/></td>
                       <td className="px-3 py-2 border">{sales?.paymentMethod}</td>
 
                       <td className="px-3 py-2 border">
-                        {sales?.paymentStatus
-                        || "hwllomd"}
+                        {sales?.paymentStatus || "N/A"}
                       </td>
 
                       <td className="px-4  py-2 border">

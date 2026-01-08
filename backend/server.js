@@ -91,4 +91,18 @@ server.listen(PORT, async () => {
   console.log(`Allowed Frontend: ${FRONTEND_URL}`);
 });
 
+// Handle server errors gracefully
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`❌ Port ${PORT} is already in use. Please either:`);
+    console.error(`   1. Kill the process using port ${PORT}`);
+    console.error(`   2. Set a different PORT in your .env file`);
+    console.error(`\nTo find and kill the process, run: lsof -ti:${PORT} | xargs kill -9`);
+    process.exit(1);
+  } else {
+    console.error('Server error:', err);
+    process.exit(1);
+  }
+});
+
 module.exports = { io, server };

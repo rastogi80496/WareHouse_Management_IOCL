@@ -27,24 +27,27 @@ const navigator=useNavigate()
   const onSubmit = (data) => {
     console.log("Form Submitted:", data);
     dispatch(login(data))
-    .then(()=>{
-    
-      navigator('/ManagerDashboard')
-      if(Authuser.user.role==="staff"){
-        navigator('/StaffDashboard')
-      } 
-      else if(Authuser.user.role=="admin"){
-        navigator('/AdminDashboard')
-      }
-      else{
+    .unwrap()
+    .then((response)=>{
+      const user = response.user;
+      if(user && user.role){
+        if(user.role==="staff"){
+          navigator('/StaffDashboard')
+        } 
+        else if(user.role==="admin"){
+          navigator('/AdminDashboard')
+        }
+        else{
+          navigator('/ManagerDashboard')
+        }
+      } else {
         navigator('/ManagerDashboard')
       }
-
-
     }) 
     .catch((error) => {
-    
       console.error("Error in Login:", error);
+      // Show user-friendly error message
+      alert(error || "Login failed. Please check your credentials and try again.");
     });
   };
 
@@ -55,7 +58,7 @@ const navigator=useNavigate()
   }, [Authuser]);
 
   return (
-    <div className="min-h-screen bg-base-100 flex bg-gray-50 min-h-screen">
+    <div className="min-h-screen bg-base-100 flex bg-gray-50">
       <div className="w-full sm:w-1/2 p-6 flex items-center justify-center bg-white shadow-lg rounded-xl">
         <div className="max-w-md w-full">
           <div className="text-center mb-8">

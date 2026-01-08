@@ -23,7 +23,7 @@ console.log(userdata)
 
 
     const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (!storedUser ) {
+    if (!storedUser) {
       toast.error("User not authenticated. Please log in again.");
       return;
     }
