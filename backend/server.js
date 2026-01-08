@@ -54,6 +54,11 @@ const io = new Server(server, {
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   },
+  // Better compatibility with Render and production environments
+  transports: ['polling', 'websocket'],
+  allowEIO3: true, // Allow Engine.IO v3 clients
+  pingTimeout: 60000,
+  pingInterval: 25000,
 });
 
 

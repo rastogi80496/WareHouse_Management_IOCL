@@ -28,28 +28,45 @@ console.log("🔧 Socket Configuration:", {
   "Fallback": fallbackURL
 });
 
+// Create socket with polling as primary transport (more reliable for production)
+// autoConnect: false - we'll connect manually when needed
 const socket = io(backendURL, {
   withCredentials: true,
-  transports: ["websocket", "polling"],
-  autoConnect: true,
+  transports: ["polling", "websocket"], // Polling first for better compatibility
+  autoConnect: false, // Don't auto-connect - connect when needed
   reconnection: true,
-  reconnectionDelay: 1000,
-  reconnectionAttempts: 5,
+  reconnectionDelay: 2000,
+  reconnectionAttempts: 3,
+  timeout: 10000,
 });
 
-// Handle connection errors gracefully
+// Handle connection errors gracefully (non-blocking)
 socket.on("connect_error", (error) => {
-  console.warn("Socket connection error:", error.message);
-  console.warn("Backend URL:", backendURL);
-  console.warn("Make sure the backend server is running on", backendURL);
+  console.warn("Socket connection error (non-critical):", error.message);
+  // Don't show error to user - socket is optional for real-time features
 });
 
 socket.on("connect", () => {
-  console.log("Socket connected successfully to:", backendURL);
+  console.log("✅ Socket connected successfully to:", backendURL);
 });
 
 socket.on("disconnect", (reason) => {
+  if (reason === "io server disconnect") {
+    // Server disconnected, try to reconnect
+    socket.connect();
+  }
   console.warn("Socket disconnected:", reason);
 });
+
+// Only connect if we're not in a critical path (lazy connection)
+// This prevents blocking the app if socket fails
+if (typeof window !== 'undefined') {
+  // Try to connect after a short delay (non-blocking)
+  setTimeout(() => {
+    if (!socket.connected) {
+      socket.connect();
+    }
+  }, 1000);
+}
 
 export default socket;

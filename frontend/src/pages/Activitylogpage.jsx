@@ -32,24 +32,32 @@ function Activitylogpage() {
   useEffect(() => {
     socketRef.current = io(backendURL, {
       withCredentials: true,
-      transports: ["websocket", "polling"],
-      autoConnect: true,
+      transports: ["polling", "websocket"], // Polling first for better compatibility
+      autoConnect: false,
       reconnection: true,
     });
+
+    // Try to connect (non-blocking)
+    if (!socketRef.current.connected) {
+      socketRef.current.connect();
+    }
 
     socketRef.current.on("newActivityLog", (newLog) => {
       setLogs((prevLogs) => [newLog, ...prevLogs]);
     });
 
     socketRef.current.on("connect_error", (error) => {
-      console.warn("Socket connection error in ActivityLog:", error.message);
+      // Non-critical - socket is optional for real-time updates
+      console.warn("Socket connection error in ActivityLog (non-critical):", error.message);
     });
 
     return () => {
       if (socketRef.current) {
         socketRef.current.off("newActivityLog");
         socketRef.current.off("connect_error");
-        socketRef.current.disconnect();
+        if (socketRef.current.connected) {
+          socketRef.current.disconnect();
+        }
       }
     };
   }, []);

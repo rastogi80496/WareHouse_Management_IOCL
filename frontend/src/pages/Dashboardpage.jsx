@@ -26,13 +26,18 @@ function Dashboardpage() {
 
   const socket = io(backendURL, {
     withCredentials: true,
-    transports: ["websocket", "polling"],
-    autoConnect: true,
+    transports: ["polling", "websocket"], // Polling first for better compatibility
+    autoConnect: false,
     reconnection: true,
   });
 
   useEffect(() => {
     dispatch(getrecentActivityLogs());
+
+    // Try to connect socket (non-blocking)
+    if (!socket.connected) {
+      socket.connect();
+    }
 
     // Listen for new activity logs
     socket.on("newActivityLog", (newLog) => {
@@ -41,13 +46,16 @@ function Dashboardpage() {
     });
 
     socket.on("connect_error", (error) => {
-      console.warn("Socket connection error in Dashboard:", error.message);
+      // Non-critical - socket is optional
+      console.warn("Socket connection error in Dashboard (non-critical):", error.message);
     });
 
     return () => {
       socket.off("newActivityLog");
       socket.off("connect_error");
-      socket.disconnect();
+      if (socket.connected) {
+        socket.disconnect();
+      }
     };
   }, [dispatch, socket]);
 

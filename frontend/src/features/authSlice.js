@@ -42,7 +42,8 @@ export const login = createAsyncThunk(
       let errorMessage = "Login failed";
       
       if (error.code === 'ERR_NETWORK' || error.message === 'Network Error') {
-        errorMessage = "Cannot connect to server. Please make sure the backend is running on port 4000.";
+        const backendURL = process.env.REACT_APP_BACKEND_URL || "the backend server";
+        errorMessage = `Cannot connect to server. Please check if ${backendURL} is running and accessible.`;
       } else if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
       } else if (error.response?.data?.error) {
