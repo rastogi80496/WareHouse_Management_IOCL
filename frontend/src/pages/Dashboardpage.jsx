@@ -7,14 +7,19 @@ import { getrecentActivityLogs } from "../features/activitySlice";
 import FormattedTime from "../lib/FormattedTime ";
 import { io } from "socket.io-client";
 
+const fallbackURL = "http://localhost:4000";
+const backendURL = process.env.REACT_APP_BACKEND_URL || fallbackURL;
+
 function Dashboardpage() {
   const { staffuser, manageruser, adminuser } = useSelector((state) => state.auth);
   const { recentuser } = useSelector((state) => state.activity);
   const dispatch = useDispatch();
 
-  const socket = io(process.env.REACT_APP_BACKEND_URL, {
+  const socket = io(backendURL, {
     withCredentials: true,
     transports: ["websocket", "polling"],
+    autoConnect: true,
+    reconnection: true,
   });
 
   useEffect(() => {
@@ -26,8 +31,14 @@ function Dashboardpage() {
       // Optionally, update the UI or refetch logs
     });
 
+    socket.on("connect_error", (error) => {
+      console.warn("Socket connection error in Dashboard:", error.message);
+    });
+
     return () => {
-      socket.off("newActivityLog"); // Clean up the listener
+      socket.off("newActivityLog");
+      socket.off("connect_error");
+      socket.disconnect();
     };
   }, [dispatch, socket]);
 

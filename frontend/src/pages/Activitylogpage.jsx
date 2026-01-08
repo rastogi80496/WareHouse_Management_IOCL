@@ -5,6 +5,9 @@ import { getAllActivityLogs, getsingleUserActivityLogs } from "../features/activ
 import TopNavbar from "../Components/TopNavbar";
 import FormattedTime from "../lib/FormattedTime ";
 
+const fallbackURL = "http://localhost:4000";
+const backendURL = process.env.REACT_APP_BACKEND_URL || fallbackURL;
+
 function Activitylogpage() {
   const [logs, setLogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,17 +21,27 @@ function Activitylogpage() {
 
   // Initialize socket once
   useEffect(() => {
-    socketRef.current = io(process.env.REACT_APP_BACKEND_URL, {
+    socketRef.current = io(backendURL, {
       withCredentials: true,
       transports: ["websocket", "polling"],
+      autoConnect: true,
+      reconnection: true,
     });
 
     socketRef.current.on("newActivityLog", (newLog) => {
       setLogs((prevLogs) => [newLog, ...prevLogs]);
     });
 
+    socketRef.current.on("connect_error", (error) => {
+      console.warn("Socket connection error in ActivityLog:", error.message);
+    });
+
     return () => {
-      socketRef.current.disconnect();
+      if (socketRef.current) {
+        socketRef.current.off("newActivityLog");
+        socketRef.current.off("connect_error");
+        socketRef.current.disconnect();
+      }
     };
   }, []);
 

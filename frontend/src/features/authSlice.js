@@ -39,7 +39,25 @@ export const login = createAsyncThunk(
       localStorage.setItem("token", response.data.user.token); 
       return response.data;
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.response?.data?.error || error.message || "Login failed";
+      let errorMessage = "Login failed";
+      
+      if (error.code === 'ERR_NETWORK' || error.message === 'Network Error') {
+        errorMessage = "Cannot connect to server. Please make sure the backend is running on port 4000.";
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      console.error("Login error details:", {
+        message: error.message,
+        code: error.code,
+        response: error.response?.data,
+        config: error.config?.url
+      });
+      
       return rejectWithValue(errorMessage);
     }
   }
