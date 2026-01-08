@@ -8,7 +8,11 @@ import FormattedTime from "../lib/FormattedTime ";
 import { io } from "socket.io-client";
 
 const fallbackURL = "http://localhost:4000";
-const backendURL = process.env.REACT_APP_BACKEND_URL || fallbackURL;
+let backendURL = process.env.REACT_APP_BACKEND_URL || fallbackURL;
+// Safety check: if somehow port 5000 is set, override it to 4000
+if (backendURL.includes(':5000')) {
+  backendURL = backendURL.replace(':5000', ':4000');
+}
 
 function Dashboardpage() {
   const { staffuser, manageruser, adminuser } = useSelector((state) => state.auth);
