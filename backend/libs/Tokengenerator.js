@@ -17,11 +17,15 @@ const generateToken = async (user, res) => {
 
     console.log("Generated JWT:", token); 
 
+    // Determine if we're in production (HTTPS)
+    const isProduction = process.env.NODE_ENV === 'production' || process.env.FRONTEND_URL?.includes('https://');
+    
     res.cookie("Inventorymanagmentsystem", token, {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       httpOnly: true,
-      sameSite: 'None',
-      secure: true,
+      sameSite: isProduction ? 'None' : 'Lax', // 'None' requires secure: true
+      secure: isProduction, // Only use secure cookies in production (HTTPS)
+      domain: isProduction ? undefined : undefined, // Let browser handle domain
     });
 
     return token;

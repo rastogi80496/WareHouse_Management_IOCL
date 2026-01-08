@@ -7,12 +7,17 @@ import { getrecentActivityLogs } from "../features/activitySlice";
 import FormattedTime from "../lib/FormattedTime ";
 import { io } from "socket.io-client";
 
+// Determine backend URL - use environment variable or fallback
+const getBackendURL = () => {
+  if (process.env.REACT_APP_BACKEND_URL) {
+    return process.env.REACT_APP_BACKEND_URL;
+  }
+  const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  return isDevelopment ? "http://localhost:4000" : "";
+};
+
 const fallbackURL = "http://localhost:4000";
-let backendURL = process.env.REACT_APP_BACKEND_URL || fallbackURL;
-// Safety check: if somehow port 5000 is set, override it to 4000
-if (backendURL.includes(':5000')) {
-  backendURL = backendURL.replace(':5000', ':4000');
-}
+let backendURL = getBackendURL() || fallbackURL;
 
 function Dashboardpage() {
   const { staffuser, manageruser, adminuser } = useSelector((state) => state.auth);

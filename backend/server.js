@@ -22,9 +22,15 @@ const supplierrouter = require("./Routers/supplierrouter");
 const stocktransactionrouter = require("./Routers/stocktransactionrouter");
 
 //ENV VARIABLES
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
+// Support multiple origins for production (Vercel) and development
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+  ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
+  : [FRONTEND_URL, "http://localhost:3000"];
+
+console.log("Allowed Origins:", allowedOrigins);
 
 //APP & SERVER
 const app = express();
@@ -34,7 +40,17 @@ const server = http.createServer(app);
 //SOCKET.IO CONFIG
 const io = new Server(server, {
   cors: {
-    origin: FRONTEND_URL,
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
+        callback(null, true);
+      } else {
+        console.warn(`Blocked origin: ${origin}`);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   },
@@ -54,9 +70,20 @@ io.on("connection", (socket) => {
 // MIDDLEWARES
 app.use(
   cors({
-    origin: FRONTEND_URL,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
+        callback(null, true);
+      } else {
+        console.warn(`Blocked origin: ${origin}`);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 

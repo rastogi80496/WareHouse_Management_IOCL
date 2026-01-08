@@ -5,12 +5,17 @@ import { getAllActivityLogs, getsingleUserActivityLogs } from "../features/activ
 import TopNavbar from "../Components/TopNavbar";
 import FormattedTime from "../lib/FormattedTime ";
 
+// Determine backend URL - use environment variable or fallback
+const getBackendURL = () => {
+  if (process.env.REACT_APP_BACKEND_URL) {
+    return process.env.REACT_APP_BACKEND_URL;
+  }
+  const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  return isDevelopment ? "http://localhost:4000" : "";
+};
+
 const fallbackURL = "http://localhost:4000";
-let backendURL = process.env.REACT_APP_BACKEND_URL || fallbackURL;
-// Safety check: if somehow port 5000 is set, override it to 4000
-if (backendURL.includes(':5000')) {
-  backendURL = backendURL.replace(':5000', ':4000');
-}
+let backendURL = getBackendURL() || fallbackURL;
 
 function Activitylogpage() {
   const [logs, setLogs] = useState([]);
