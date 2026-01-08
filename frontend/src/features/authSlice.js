@@ -23,7 +23,8 @@ export const signup = createAsyncThunk(
       localStorage.setItem("token", response.data.savedUser.token); 
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Signup failed");
+      const errorMessage = error.response?.data?.message || error.response?.data?.error || error.message || "Signup failed";
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -38,7 +39,8 @@ export const login = createAsyncThunk(
       localStorage.setItem("token", response.data.user.token); 
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Login failed");
+      const errorMessage = error.response?.data?.message || error.response?.data?.error || error.message || "Login failed";
+      return rejectWithValue(errorMessage);
     }
   }
 );

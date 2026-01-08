@@ -47,7 +47,8 @@ const navigator=useNavigate()
     .catch((error) => {
       console.error("Error in Login:", error);
       // Show user-friendly error message
-      alert(error || "Login failed. Please check your credentials and try again.");
+      const errorMessage = typeof error === 'string' ? error : error?.message || "Login failed. Please check your credentials and try again.";
+      alert(errorMessage);
     });
   };
 

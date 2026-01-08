@@ -11,7 +11,7 @@ module.exports.signup = async (req, res) => {
   
     const duplicatedUser = await User.findOne({ email });
     if (duplicatedUser) {
-      return res.status(400).json({ error: "User already exists" });
+      return res.status(400).json({ message: "User already exists" });
     }
 
 
@@ -62,7 +62,7 @@ module.exports.signup = async (req, res) => {
 
   } catch (error) {
     console.error("Error during signup:", error.message);
-    res.status(400).json({ error: "Error during signup: " + error.message });
+    res.status(400).json({ message: "Error during signup: " + error.message });
   }
 };
 
@@ -77,7 +77,7 @@ module.exports.login=async(req,res)=>{
 
      if(!duplicatedUser){
 
-   return res.status(400).json({error:"No user found"})
+   return res.status(400).json({message:"No user found"})
      }
 
 
@@ -105,7 +105,7 @@ module.exports.login=async(req,res)=>{
    return res.status(201).json({
     message:"login successfully",
     user:{
-        id:duplicatedUser.id,
+        id:duplicatedUser._id,
         name:duplicatedUser.name,
         email:duplicatedUser.email,
         role:duplicatedUser.role,
@@ -118,8 +118,9 @@ module.exports.login=async(req,res)=>{
 
 
     } catch (error) {
+  console.error("Login error:", error);
   res.status(400).json({
-    error:"Error in login to the page"
+    message:"Error in login to the page"
   })
 
         
