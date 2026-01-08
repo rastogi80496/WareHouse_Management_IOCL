@@ -27,10 +27,34 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
 // Support multiple origins for production (Vercel) and development
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
-  ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
-  : [FRONTEND_URL, "http://localhost:3000"];
+  ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim().replace(/\/$/, ''))
+  : [FRONTEND_URL.replace(/\/$/, ''), "http://localhost:3000"];
 
-console.log("Allowed Origins:", allowedOrigins);
+// Normalize all origins (remove trailing slashes)
+const normalizedOrigins = allowedOrigins.map(origin => origin.replace(/\/$/, ''));
+
+console.log("Allowed Origins:", normalizedOrigins);
+
+// Helper function to check if origin is allowed (handles Vercel preview URLs)
+const isOriginAllowed = (origin) => {
+  if (!origin) return true; // Allow requests with no origin
+  
+  // Normalize the origin (remove trailing slash)
+  const normalizedOrigin = origin.replace(/\/$/, '');
+  
+  // Check exact match
+  if (normalizedOrigins.includes(normalizedOrigin)) {
+    return true;
+  }
+  
+  // Check if it's a Vercel preview URL (pattern: https://iocl-demo-*.vercel.app)
+  // This allows all Vercel preview deployments
+  if (normalizedOrigin.includes('.vercel.app') && normalizedOrigin.includes('iocl-demo')) {
+    return true;
+  }
+  
+  return false;
+};
 
 //APP & SERVER
 const app = express();
@@ -41,10 +65,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-      
-      if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
+      if (isOriginAllowed(origin)) {
         callback(null, true);
       } else {
         console.warn(`Blocked origin: ${origin}`);
@@ -76,10 +97,7 @@ io.on("connection", (socket) => {
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-      
-      if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
+      if (isOriginAllowed(origin)) {
         callback(null, true);
       } else {
         console.warn(`Blocked origin: ${origin}`);
