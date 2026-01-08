@@ -1,5 +1,5 @@
 const StockTransaction = require("../models/StockTranscationmodel");
-const Product = require("../models/ProductModel");
+const Product = require("../models/Productmodel");
 
 /* ================= CREATE STOCK ================= */
 module.exports.createStockTransaction = async (req, res) => {
