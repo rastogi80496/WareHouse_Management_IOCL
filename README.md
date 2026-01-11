@@ -356,7 +356,7 @@ This project is licensed under the ISC License.
 
 ## 👨‍💻 Author
 
-Your Name / Your Organization
+Aditya Shivam Rastogi / Your Organization
 
 ---
 
@@ -371,7 +371,7 @@ Your Name / Your Organization
 
 ## 📞 Support
 
-For support, email your-email@example.com or create an issue in the repository.
+For support, email adityarastogi929@gmail.com or create an issue in the repository.
 
 ---
 
