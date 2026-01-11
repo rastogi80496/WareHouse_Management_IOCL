@@ -1,6 +1,7 @@
 const Order = require('../models/Ordermodel');
 const logActivity = require('../libs/logger');
 const ProductModel = require('../models/Productmodel');
+const { checkProductQuantityAndNotify } = require("../libs/productNotificationHelper");
 
 const createOrder = async (req, res) => {
     try {
@@ -30,6 +31,10 @@ const createOrder = async (req, res) => {
 
         productRecord.quantity -= quantity;
         await productRecord.save();
+
+        // Check if product quantity is zero and create notification
+        const io = req.app.get("io");
+        await checkProductQuantityAndNotify(productRecord, io);
 
         const newOrder = new Order({
             user,

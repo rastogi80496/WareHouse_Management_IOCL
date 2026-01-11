@@ -1,24 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Sidebar from '../Components/Sidebar';
+import MobileMenu from '../Components/MobileMenu';
 import { Outlet } from 'react-router-dom';
+
 function AdminDashboard() {
-  
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
-    <div className="flex bg-gray-200 min-h-screen">
+    <div className="flex bg-white min-h-screen">
+      <MobileMenu onClick={() => setSidebarOpen(true)} />
+      
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="fixed h-full">
-        <Sidebar />
-      </div>
-
-     
-      <div className="flex-1 pl-64"> 
+      <div className="flex-1 lg:pl-64 w-full pt-16 lg:pt-0 bg-white"> 
         <Outlet />
       </div>
     </div>
   );
 }
 
-export default AdminDashboard
+export default AdminDashboard;
 
 
 

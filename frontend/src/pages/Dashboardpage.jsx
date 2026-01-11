@@ -62,27 +62,27 @@ function Dashboardpage() {
   return (
     <div className="bg-base-100">
       <TopNavbar />
-      <div className="min-h-screen flex flex-col items-center p-10">
-        <h1 className="text-3xl font-semibold mb-6">Dashboard</h1>
+      <div className="min-h-screen flex flex-col items-center p-4 sm:p-6 lg:p-10">
+        <h1 className="text-2xl sm:text-3xl font-semibold mb-6">Dashboard</h1>
 
         {/* User Count Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <div className="bg-white shadow-lg rounded-xl p-6 flex flex-col items-center w-56 h-56 hover:shadow-xl transition-shadow">
-            <LuUsers className="text-5xl text-blue-500 mb-4" />
-            <p className="text-xl font-bold text-gray-700">{staffuser?.length || 0}</p>
-            <p className="text-gray-500">Staff Users</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-10 w-full max-w-6xl">
+          <div className="bg-white shadow-lg rounded-xl p-4 sm:p-6 flex flex-col items-center w-full sm:w-56 h-48 sm:h-56 hover:shadow-xl transition-shadow">
+            <LuUsers className="text-4xl sm:text-5xl text-blue-500 mb-3 sm:mb-4" />
+            <p className="text-lg sm:text-xl font-bold text-gray-700">{staffuser?.length || 0}</p>
+            <p className="text-sm sm:text-base text-gray-500">Staff Users</p>
           </div>
 
-          <div className="bg-white shadow-lg rounded-xl p-6 flex flex-col items-center w-56 h-56 hover:shadow-xl transition-shadow">
-            <LuUsers className="text-5xl text-green-500 mb-4" />
-            <p className="text-xl font-bold text-gray-700">{manageruser?.length || 0}</p>
-            <p className="text-gray-500">Managers</p>
+          <div className="bg-white shadow-lg rounded-xl p-4 sm:p-6 flex flex-col items-center w-full sm:w-56 h-48 sm:h-56 hover:shadow-xl transition-shadow">
+            <LuUsers className="text-4xl sm:text-5xl text-green-500 mb-3 sm:mb-4" />
+            <p className="text-lg sm:text-xl font-bold text-gray-700">{manageruser?.length || 0}</p>
+            <p className="text-sm sm:text-base text-gray-500">Managers</p>
           </div>
 
-          <div className="bg-white shadow-lg rounded-xl p-6 flex flex-col items-center w-56 h-56 hover:shadow-xl transition-shadow">
-            <LuUsers className="text-5xl text-red-500 mb-4" />
-            <p className="text-xl font-bold text-gray-700">{adminuser?.length || 0}</p>
-            <p className="text-gray-500">Admins</p>
+          <div className="bg-white shadow-lg rounded-xl p-4 sm:p-6 flex flex-col items-center w-full sm:w-56 h-48 sm:h-56 hover:shadow-xl transition-shadow sm:col-span-2 lg:col-span-1">
+            <LuUsers className="text-4xl sm:text-5xl text-red-500 mb-3 sm:mb-4" />
+            <p className="text-lg sm:text-xl font-bold text-gray-700">{adminuser?.length || 0}</p>
+            <p className="text-sm sm:text-base text-gray-500">Admins</p>
           </div>
         </div>
 
@@ -91,9 +91,9 @@ function Dashboardpage() {
       </div>
 
       {/* Recent Activity Section */}
-      <div className="mt-10 p-10 bg-gray-50">
-        <h1 className="text-2xl font-bold mb-6">Recent Activity</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="mt-6 sm:mt-10 p-4 sm:p-6 lg:p-10 bg-gray-50 w-full">
+        <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Recent Activity</h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {recentuser?.length > 0 ? (
             recentuser.map((logs) => (
               <div

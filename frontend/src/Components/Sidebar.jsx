@@ -1,22 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { AiOutlineProduct } from "react-icons/ai";
 import { RiStockLine } from "react-icons/ri";
-import { FiLogOut, FiShoppingCart } from "react-icons/fi";
+import { FiLogOut, FiShoppingCart, FiMenu, FiX } from "react-icons/fi";
 import { MdOutlineInventory2, MdPointOfSale, MdOutlineCategory } from "react-icons/md";
 import { TfiSupport } from "react-icons/tfi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { RxActivityLog, RxDashboard } from "react-icons/rx";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../features/authSlice";
 import toast from 'react-hot-toast';
 import { LuUsers } from "react-icons/lu";
 import logo1 from '../images/logo1.gif';
-function Sidebar() {
+
+function Sidebar({ isOpen = true, onClose }) {
   const dispatch = useDispatch();
   const navigator = useNavigate();
-  const { Authuser } = useSelector((state) => state.auth); 
+  const location = useLocation();
+  const { Authuser } = useSelector((state) => state.auth);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      if (window.innerWidth >= 768 && onClose) {
+        onClose(); // Close sidebar on desktop
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [onClose]); 
 
   const handleLogout = async () => {
     dispatch(logout())
@@ -29,9 +44,46 @@ function Sidebar() {
       });
   };
 
+  // Close sidebar when route changes on mobile
+  useEffect(() => {
+    if (isMobile && isOpen) {
+      onClose?.();
+    }
+  }, [location.pathname, isMobile, isOpen, onClose]);
+
   return (
-    <div className="flex flex-col w-64 text-black min-h-screen p-6 shadow-lg ">
-      <h1 className="text-2xl font-bold text-center text-gray-700 mb-10"> <img src={logo1} className='w-56 bg-white' alt="sample logo"></img></h1>
+    <>
+      {/* Mobile Overlay */}
+      {isMobile && isOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div
+        className={`fixed lg:static flex flex-col w-64 text-black min-h-screen p-4 lg:p-6 shadow-lg bg-white z-50 transform transition-transform duration-300 ease-in-out ${
+          isMobile
+            ? isOpen
+              ? 'translate-x-0'
+              : '-translate-x-full'
+            : 'translate-x-0'
+        }`}
+      >
+        {/* Mobile Close Button */}
+        {isMobile && (
+          <button
+            onClick={onClose}
+            className="lg:hidden absolute top-4 right-4 text-gray-700 hover:text-gray-900"
+          >
+            <FiX className="text-2xl" />
+          </button>
+        )}
+
+        <h1 className="text-2xl font-bold text-center text-gray-700 mb-6 lg:mb-10">
+          <img src={logo1} className="w-48 lg:w-56 bg-white" alt="sample logo" />
+        </h1>
 
       <nav className="space-y-4">
   
@@ -161,7 +213,8 @@ function Sidebar() {
           <span onClick={handleLogout}>Logout</span>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 

@@ -1,5 +1,6 @@
 const StockTransaction = require("../models/StockTranscationmodel");
 const Product = require("../models/Productmodel");
+const { checkProductQuantityAndNotify } = require("../libs/productNotificationHelper");
 
 /* ================= CREATE STOCK ================= */
 module.exports.createStockTransaction = async (req, res) => {
@@ -36,6 +37,10 @@ module.exports.createStockTransaction = async (req, res) => {
     }
 
     await productData.save();
+
+    // Check if product quantity is zero and create notification
+    const io = req.app.get("io");
+    await checkProductQuantityAndNotify(productData, io);
 
     const transaction = await StockTransaction.create({
       product,

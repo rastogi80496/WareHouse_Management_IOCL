@@ -1,34 +1,46 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import HomePage from "./pages/HomePage";
-import Navbar from "./Components/Navbar";
-import Footer from "./Components/Footer";
-import SignupPage from "./pages/SignupPages";
-import ServicePage from "./pages/ServicePage";
-import LoginPage from "./pages/LoginPage";
-import Profilepage from "./pages/Profilepage";
-import ManagerDashboard from "./pages/ManagerDashboard";
-import AdminDashboard from "./pages/AdminDashboard";
-import StaffDashboard from "./pages/StaffDashboard";
-import Productpage from "./pages/Productpage";
-import Orderpage from "./pages/Orderpage";
-import Salespage from "./pages/Salespage";
-import StockTransaction from "./pages/StockTransaction";
-import Categorypage from "./pages/Categorypage";
-import Notificationpage from "./pages/Notificationpage";
-import Supplierpage from "./pages/Supplierpage";
-import Activitylogpage from "./pages/Activitylogpage";
-import Dashboardpage from "./pages/Dashboardpage";
-import Userstatus from "./pages/Userstatus";
-import NotificationPageRead from "./pages/Notificationpageread"
+import { Suspense, lazy } from "react";
 import ProtectedRoute from "./lib/ProtectedRoute";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
+
+// Lazy load components for better performance
+const HomePage = lazy(() => import("./pages/HomePage"));
+const SignupPage = lazy(() => import("./pages/SignupPages"));
+const ServicePage = lazy(() => import("./pages/ServicePage"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const ManagerDashboard = lazy(() => import("./pages/ManagerDashboard"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const StaffDashboard = lazy(() => import("./pages/StaffDashboard"));
+const Productpage = lazy(() => import("./pages/Productpage"));
+const Orderpage = lazy(() => import("./pages/Orderpage"));
+const Salespage = lazy(() => import("./pages/Salespage"));
+const StockTransaction = lazy(() => import("./pages/StockTransaction"));
+const Categorypage = lazy(() => import("./pages/Categorypage"));
+const Notificationpage = lazy(() => import("./pages/Notificationpage"));
+const Supplierpage = lazy(() => import("./pages/Supplierpage"));
+const Activitylogpage = lazy(() => import("./pages/Activitylogpage"));
+const Dashboardpage = lazy(() => import("./pages/Dashboardpage"));
+const Userstatus = lazy(() => import("./pages/Userstatus"));
+const NotificationPageRead = lazy(() => import("./pages/Notificationpageread"));
+const Profilepage = lazy(() => import("./pages/Profilepage"));
+
+// Loading component
+const LoadingSpinner = () => (
+  <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="text-center">
+      <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <p className="mt-4 text-gray-600">Loading...</p>
+    </div>
+  </div>
+);
 
 function App() {
   return (
     <Router>
       <div>
         <Toaster />
-        <Routes>
+        <Suspense fallback={<LoadingSpinner />}>
+          <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<ServicePage />} />
           <Route path="/SignupPage" element={<SignupPage />} />
@@ -167,7 +179,8 @@ function App() {
               element={<ProtectedRoute element={<Activitylogpage />} />}
             />
           </Route>
-        </Routes>
+          </Routes>
+        </Suspense>
       </div>
     </Router>
   );

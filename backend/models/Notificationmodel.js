@@ -15,6 +15,11 @@ const NotificationSchema= new mongoose.Schema({
         require:true,
         
     },
+    productId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Product",
+        default:null
+    },
     createdAt:{
         type:Date,
         default:Date.now

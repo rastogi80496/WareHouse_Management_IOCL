@@ -1,5 +1,6 @@
 const Sale = require("../models/Salesmodel");
 const ProductModel = require('../models/Productmodel');
+const { checkProductQuantityAndNotify } = require("../libs/productNotificationHelper");
 
 
 module.exports.createSale = async (req, res) => {
@@ -27,6 +28,9 @@ module.exports.createSale = async (req, res) => {
     productRecord.quantity -= products.quantity;
     await productRecord.save();
 
+    // Check if product quantity is zero and create notification
+    const io = req.app.get("io");
+    await checkProductQuantityAndNotify(productRecord, io);
 
     const newSale = new Sale({
       customerName,

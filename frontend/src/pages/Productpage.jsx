@@ -133,32 +133,32 @@ function Productpage() {
     <div className="bg-base-100 min-h-screen">
       <TopNavbar />
 
-      <div className="mt-10 flex">
-        <div className="bg-blue-950 w-56 rounded-xl ml-10 block h-24">
-          <h1 className="text-white ml-12 block pt-5 font-bold">Total Product</h1>
-          <p className="text-white font-bold pt-2 ml-24">{getallproduct?.length || "0"}</p>
+      <div className="mt-4 lg:mt-10 flex flex-col sm:flex-row gap-4 px-4 lg:px-10">
+        <div className="bg-blue-950 w-full sm:w-56 rounded-xl p-4 sm:p-0 sm:h-24 flex flex-col justify-center items-center sm:items-start sm:ml-10">
+          <h1 className="text-white text-sm sm:text-base font-bold sm:ml-12 sm:pt-5">Total Product</h1>
+          <p className="text-white font-bold text-xl sm:pt-2 sm:ml-24">{getallproduct?.length || "0"}</p>
         </div>
-        <div className="bg-blue-950 ml-10 rounded-xl block w-56 h-24">
-          <h1 className="text-white font-bold ml-12 pt-5">Total store value</h1>
-          <p className="text-white font-bold pt-2 ml-24">$
+        <div className="bg-blue-950 w-full sm:w-56 rounded-xl p-4 sm:p-0 sm:h-24 flex flex-col justify-center items-center sm:items-start sm:ml-10">
+          <h1 className="text-white text-sm sm:text-base font-bold sm:ml-12 sm:pt-5">Total store value</h1>
+          <p className="text-white font-bold text-xl sm:pt-2 sm:ml-24">$
             {getallproduct?.reduce((totalAmount, product) => {
               return totalAmount + product.Price;
             }, 0) || "0"}
           </p>
         </div>
-        <div className="bg-blue-950 bg-base-100 w-56 rounded-xl ml-10 block h-24">
-          <h1 className="text-white font-bold ml-12 pt-5">Total Category</h1>
-          <p className="text-white font-bold pt-2 ml-24"> {getallCategory?.length || "0"}</p>
+        <div className="bg-blue-950 w-full sm:w-56 rounded-xl p-4 sm:p-0 sm:h-24 flex flex-col justify-center items-center sm:items-start sm:ml-10">
+          <h1 className="text-white text-sm sm:text-base font-bold sm:ml-12 sm:pt-5">Total Category</h1>
+          <p className="text-white font-bold text-xl sm:pt-2 sm:ml-24">{getallCategory?.length || "0"}</p>
         </div>
       </div>
 
-      <div className="mt-12 ml-5">
-        <div className="flex items-center space-x-4">
+      <div className="mt-6 lg:mt-12 px-4 lg:px-5">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:space-x-4">
           <input
             type="text"
             value={query}
             onChange={(e) => setquery(e.target.value)}
-            className="w-full md:w-96 h-12 pl-4 pr-12 border-2 border-gray-300 rounded-lg"
+            className="flex-1 h-12 pl-4 pr-12 border-2 border-gray-300 rounded-lg"
             placeholder="Enter your product"
           />
           <button
@@ -166,18 +166,18 @@ function Productpage() {
               setIsFormVisible(true);
               setSelectedProduct(null);
             }}
-            className="bg-blue-800 text-white w-40 h-12 rounded-lg flex items-center justify-center"
+            className="bg-blue-800 text-white w-full sm:w-40 h-12 rounded-lg flex items-center justify-center"
           >
-            <IoMdAdd className="text-xl mr-2" /> Add Product
+            <IoMdAdd className="text-xl mr-2" /> <span className="sm:inline">Add Product</span>
           </button>
         </div>
 
         {isFormVisible && (
-          <div className="absolute top-16 bg-gray-100 right-0 h-svh p-6 border-2 border-gray-300 rounded-lg shadow-md transition-transform transform">
-            <div className="text-right">
+          <div className="fixed lg:absolute inset-0 lg:top-16 lg:right-0 lg:inset-auto bg-gray-100 lg:h-svh z-50 p-4 lg:p-6 border-2 border-gray-300 rounded-lg shadow-md transition-transform transform overflow-y-auto">
+            <div className="text-right mb-4">
               <MdKeyboardDoubleArrowLeft
                 onClick={() => setIsFormVisible(false)}
-                className="cursor-pointer text-2xl"
+                className="cursor-pointer text-2xl inline-block"
               />
             </div>
 
@@ -268,17 +268,17 @@ function Productpage() {
         <div className="mt-10">
           <h2 className="text-xl font-semibold mb-4">Product List</h2>
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-base-100 border mb-24 border-gray-200 rounded-lg shadow-md">
-              <thead className="">
+            <table className="min-w-full bg-base-100 border mb-24 border-gray-200 rounded-lg shadow-md text-sm sm:text-base">
+              <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-3 py-2 border w-5">#</th>
-                  <th className="px-3 py-2 border">Name</th>
-                  <th className="px-3 py-2 border">Category</th>
-                  <th className="px-3 py-2 border">Description</th>
-                  <th className="px-3 py-2 border">Quantity</th>
-                  <th className="px-3 py-2 border">Price</th>
-                  <th className="px-3 py-2 border">Date </th>
-                  <th className="px-3 py-2 w-72 border">Operations</th>
+                  <th className="px-2 sm:px-3 py-2 border text-xs sm:text-sm font-semibold">#</th>
+                  <th className="px-2 sm:px-3 py-2 border text-xs sm:text-sm font-semibold">Name</th>
+                  <th className="px-2 sm:px-3 py-2 border text-xs sm:text-sm font-semibold hidden sm:table-cell">Category</th>
+                  <th className="px-2 sm:px-3 py-2 border text-xs sm:text-sm font-semibold hidden md:table-cell">Description</th>
+                  <th className="px-2 sm:px-3 py-2 border text-xs sm:text-sm font-semibold">Qty</th>
+                  <th className="px-2 sm:px-3 py-2 border text-xs sm:text-sm font-semibold">Price</th>
+                  <th className="px-2 sm:px-3 py-2 border text-xs sm:text-sm font-semibold hidden lg:table-cell">Date</th>
+                  <th className="px-2 sm:px-3 py-2 border text-xs sm:text-sm font-semibold">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -291,31 +291,33 @@ function Productpage() {
                       : 'N/A';
                     
                     return (
-                      <tr key={product._id}>
-                        <td className="px-3 py-2 border">{index+1}</td>
-                        <td className="px-3 py-2 border">{product.name}</td>
-                        <td className="px-3 py-2 border">
+                      <tr key={product._id} className="hover:bg-gray-50">
+                        <td className="px-2 sm:px-3 py-2 border">{index+1}</td>
+                        <td className="px-2 sm:px-3 py-2 border font-medium">{product.name}</td>
+                        <td className="px-2 sm:px-3 py-2 border hidden sm:table-cell">
                           {product.Category?.name || "No Category"}
                         </td>
-                        <td className="px-3 py-2 border">
+                        <td className="px-2 sm:px-3 py-2 border hidden md:table-cell truncate max-w-xs">
                           {product.Desciption}
                         </td>
-                        <td className="px-3 py-2 border">{product.quantity}</td>
-                        <td className="px-3 py-2 border">${product.Price}</td>
-                        <td className="px-3 py-2 border"><FormattedTime timestamp={product?.createdAt} /></td>
-                        <td className="px-4 py-2 border">
-                          <button
-                            onClick={() => handleremove(product._id)}
-                            className="h-10 w-24 bg-red-500 hover:bg-red-700 rounded-md text-white"
-                          >
-                            Remove
-                          </button>
-                          <button
-                            onClick={() => handleEditClick(product)}
-                            className="h-10 w-24 bg-green-500 ml-10 hover:bg-green-700 rounded-md text-white"
-                          >
-                            Edit
-                          </button>
+                        <td className="px-2 sm:px-3 py-2 border">{product.quantity}</td>
+                        <td className="px-2 sm:px-3 py-2 border">${product.Price}</td>
+                        <td className="px-2 sm:px-3 py-2 border hidden lg:table-cell"><FormattedTime timestamp={product?.createdAt} /></td>
+                        <td className="px-2 lg:px-4 py-2 border">
+                          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                            <button
+                              onClick={() => handleremove(product._id)}
+                              className="h-10 w-full sm:w-24 bg-red-500 hover:bg-red-700 rounded-md text-white text-sm"
+                            >
+                              Remove
+                            </button>
+                            <button
+                              onClick={() => handleEditClick(product)}
+                              className="h-10 w-full sm:w-24 bg-green-500 hover:bg-green-700 rounded-md text-white text-sm"
+                            >
+                              Edit
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );

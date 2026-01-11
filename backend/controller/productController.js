@@ -1,6 +1,7 @@
 const Product=require('../models/Productmodel')
 
 const logActivity=require('../libs/logger')
+const { checkProductQuantityAndNotify } = require("../libs/productNotificationHelper");
 
 module.exports.Addproduct=async(req,res)=>{
   const userId=req.user._id;
@@ -132,7 +133,10 @@ module.exports.Addproduct=async(req,res)=>{
           userId: userId,
           ipAddress: ipAddress,
         });
-    
+
+        // Check if product quantity is zero and create notification
+        const io = req.app.get("io");
+        await checkProductQuantityAndNotify(updatedProduct, io);
        
         res.status(200).json(updatedProduct);
       } catch (error) {
