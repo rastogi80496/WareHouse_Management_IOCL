@@ -41,7 +41,7 @@ function Salespage() {
 
   useEffect(() => {
    dispatch(gettingallSales())
-  
+   dispatch(gettingallproducts())
   }, [dispatch,  CreateSales,EditSales]);
 
  
@@ -101,22 +101,35 @@ function Salespage() {
   const submitsales = async (event) => {
     event.preventDefault();
   
+    // Validation
+    if (!name || !Product || !quantity || !Price || !Payment) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+
     const salesData = {
       customerName: name, 
-      products: { product: Product, quantity, price: Price }, 
+      products: { 
+        product: Product, 
+        quantity: Number(quantity), 
+        price: Number(Price) 
+      }, 
       paymentMethod: Payment, 
-      paymentStatus,
-      status: Status
+      paymentStatus: paymentStatus || "pending",
+      status: Status || "pending"
     };
   
     dispatch(CreateSales(salesData))
       .unwrap()
       .then(() => {
         toast.success("Sales added successfully");
+        setIsFormVisible(false);
         resetForm();
+        dispatch(gettingallSales());
       })
-      .catch(() => {
-        toast.error("Sales add unsuccessful");
+      .catch((error) => {
+        console.error("Error creating sale:", error);
+        toast.error(error || "Sales add unsuccessful");
       });
   };
   
@@ -221,7 +234,7 @@ function Salespage() {
                   className="w-full h-10 px-2 border-2 rounded-lg mt-2"
                 >
                   <option value="">Select a Product</option>
-                  {getallproduct.map((product) => (
+                  {Array.isArray(getallproduct) && getallproduct.map((product) => (
                     <option key={product._id} value={product._id}>
                       {product.name}
                     </option>

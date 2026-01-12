@@ -7,38 +7,59 @@ module.exports.createSale = async (req, res) => {
   try {
     const { customerName, products, paymentMethod, paymentStatus, status } = req.body;
 
-    if (!customerName || !products || !products.product || !products.quantity || !products.price || !paymentMethod) {
+    if (!customerName || !products || !products.product || products.quantity === undefined || products.quantity === null || products.quantity === '' || !products.price || !paymentMethod) {
       return res.status(400).json({ success: false, message: "All fields are required." });
     }
 
+    // Convert to numbers to ensure type safety
+    const quantity = Number(products.quantity);
+    const price = Number(products.price);
 
-    const totalAmount = products.quantity * products.price;
+    if (isNaN(quantity) || quantity <= 0) {
+      return res.status(400).json({ success: false, message: "Quantity must be a positive number." });
+    }
+
+    if (isNaN(price) || price <= 0) {
+      return res.status(400).json({ success: false, message: "Price must be a positive number." });
+    }
+
+    const totalAmount = quantity * price;
 
     const productRecord = await ProductModel.findById(products.product);
-    if (!productRecord) return res.status(404).json({ message: "Product not found" });
+    if (!productRecord) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
 
-    if (productRecord.quantity < products.quantity) {
+    if (productRecord.quantity < quantity) {
         return res.status(400).json({ 
+            success: false,
             message: "Insufficient product quantity",
             available: productRecord.quantity,
-            requested: products.quantity
+            requested: quantity
         });
     }
 
-    productRecord.quantity -= products.quantity;
+    // Update product quantity
+    productRecord.quantity -= quantity;
     await productRecord.save();
 
     // Check if product quantity is zero and create notification
     const io = req.app.get("io");
-    await checkProductQuantityAndNotify(productRecord, io);
+    if (io) {
+      await checkProductQuantityAndNotify(productRecord, io);
+    }
 
     const newSale = new Sale({
       customerName,
-      products,
+      products: {
+        product: products.product,
+        quantity: quantity,
+        price: price
+      },
       totalAmount,
       paymentMethod,
-      paymentStatus,
-      status,
+      paymentStatus: paymentStatus || "pending",
+      status: status || "pending",
     });
 
     await newSale.save();
@@ -50,7 +71,8 @@ module.exports.createSale = async (req, res) => {
 
     res.status(201).json({ success: true, message: "Sale created successfully", sale: newSale });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error creating sale", error });
+    console.error("Error creating sale:", error);
+    res.status(500).json({ success: false, message: "Error creating sale", error: error.message });
   }
 };
 
