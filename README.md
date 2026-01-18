@@ -50,47 +50,6 @@ A full-stack Warehouse and Inventory Management System built with the MERN stack
 
 ---
 
----
-
-## 🔍 Troubleshooting
-
-### Backend Issues
-
-1. **Connection Timeout on Render**
-   - Render free tier has cold starts - first request takes time
-   - Check if service is running in Render dashboard
-
-2. **MongoDB Connection Failed**
-   - Verify MongoDB Atlas IP whitelist includes Render's IPs
-   - Check connection string format
-   - Ensure database user has correct permissions
-
-3. **CORS Errors**
-   - Verify `ALLOWED_ORIGINS` includes your frontend URL
-   - Check `FRONTEND_URL` is set correctly
-   - Ensure no trailing slashes in URLs
-
-### Frontend Issues
-
-1. **API Calls Failing**
-   - Verify `REACT_APP_BACKEND_URL` is set correctly
-   - Check browser console for CORS errors
-   - Ensure backend is running and accessible
-
-2. **Socket.IO Not Connecting**
-   - Check backend URL is correct
-   - Verify Socket.IO is enabled on backend
-   - Check browser console for connection errors
-
-3. **Build Failures on Vercel**
-   - Check build logs in Vercel dashboard
-   - Ensure all dependencies are in `package.json`
-   - Verify Node.js version compatibility
-
---
-
----
-
 ## 📚 Project Structure
 
 ```
@@ -155,4 +114,5 @@ For support, email adityarastogi929@gmail.com or create an issue in the reposito
 ---
 
 **Happy Coding! 🎉**
+
 
